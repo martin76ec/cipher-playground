@@ -6,8 +6,6 @@ interface Permutation {
 };
 
 const validatePermutation = (positions: number[], halfSize: number = 4) => {
-  if (halfSize % 2 !== 0) throw('block size should be an odd number');
-
   const notNumbers = positions.filter(pos => isNaN(pos));
   if (notNumbers.length > 0) throw(`just numbers allowed: ${notNumbers}`);
   const wrongRepeated = Array(halfSize)
@@ -28,7 +26,7 @@ const validatePermutation = (positions: number[], halfSize: number = 4) => {
   .filter(i => i === true);
 
 
-  if (positions.length !== halfSize) throw(`permutation positions (${positions.length}) are more than the accepted (${halfSize})`);
+  if (positions.length !== halfSize) throw(`permutation positions (${positions.length}) are different than the needed (${halfSize})`);
   if (wrongRepeated.length > 0) throw(`repeated permutation position: ${positions.filter((e, i) => positions.indexOf(e) !== i)}`);
   if (higher.length > 0) throw(`permutation position is too high: ${higher}`);
   if (lower.length > 0) throw(`permutation position is too low: ${lower}`);

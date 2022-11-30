@@ -1,5 +1,6 @@
 import { assert } from "chai";
 import { permutation, blocksFromString, strBlockPermutation, strBlockSustitution, cipherBlock, unCipherBlock } from "../src/utils/feistel";
+import { cipher, decipher } from "../src/actions/cipher";
 
 test('permutation of half-blocks', () => {
   const halfBlock = [true, false, false, true];
@@ -46,7 +47,7 @@ test('string block sustitution', () => {
 });
 
 test('string cipher', () => {
-  const str = 'Este es un test en docx\nP pi';
+  const str = '\n\nEste es un test en docx\nP pi11';
   const blocks = blocksFromString(str, 8);
   const mod = 5;
   const rounds = 8;
@@ -58,7 +59,29 @@ test('string cipher', () => {
     rounds
   }));
 
-  result.forEach(block => console.log(block));
+  const realResult = cipher(str, {
+    blocksize: 8,
+    mod,
+    positions,
+    rounds
+  });
+
+  const text = result.map(block => block[block.length - 1]).join('');
+  const realText = realResult.map(block => block[block.length - 1]).join('');
+
+  const realDeblocks = decipher(realText, {
+    blocksize: 8,
+    mod,
+    positions,
+    rounds
+  });
+
+  const deblocks = blocksFromString(text, 8);
+  const detext = deblocks.map(block => unCipherBlock(block, {
+    mod,
+    positions,
+    rounds
+  }));
 
   const unresult = result.map(block => unCipherBlock(block[block.length - 1].split(''), {
     mod,
